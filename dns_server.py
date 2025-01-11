@@ -1,10 +1,5 @@
-from dnslib import DNSRecord, RR, A, CNAME
+from dnslib import DNSRecord,QTYPE , RR, A, AAAA
 from dnslib.server import DNSServer, DNSHandler, BaseResolver
-import socket
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("DNS")
 
 
 class DynamicResolver(BaseResolver):
@@ -25,7 +20,7 @@ class DynamicResolver(BaseResolver):
                 # 解析为 IPv4 地址
                 if qtype==1:
                     ip = ".".join(parts)
-                    reply.add_answer(RR(qname, rdata=A(ip), ttl=300))
+                    reply.add_answer(RR(qname,QTYPE.A , rdata=A(ip), ttl=300))
                 else:
                     reply.header.rcode = 0
             else:
@@ -34,9 +29,11 @@ class DynamicResolver(BaseResolver):
 
         elif qname.endswith(base_domain):
             if qtype==1:
-                reply.add_answer(RR(qname, rdata=A("104.28.30.218"), ttl=300))
-                reply.add_answer(RR(qname, rdata=A("104.28.31.218"), ttl=300))
-                reply.add_answer(RR(qname, rdata=A("172.67.166.240"), ttl=300))
+                reply.add_answer(RR(qname,QTYPE.A , rdata=A("104.21.55.142"), ttl=300))
+                reply.add_answer(RR(qname,QTYPE.A, rdata=A("172.67.149.32"), ttl=300))
+            elif qtype==28:
+                reply.add_answer(RR(qname,QTYPE.AAAA, rdata=AAAA("2606:4700:3034::ac43:9520"), ttl=300))
+                reply.add_answer(RR(qname,QTYPE.AAAA, rdata=AAAA("2606:4700:3030::6815:378e"), ttl=300))
             else:
                 reply.header.rcode = 0
 
