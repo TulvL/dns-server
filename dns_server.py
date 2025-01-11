@@ -1,14 +1,12 @@
 from dnslib import DNSRecord, QTYPE, RR, A, AAAA
 from dnslib.server import DNSServer, DNSHandler, BaseResolver
 
-
 class DynamicResolver(BaseResolver):
     def resolve(self, request, handler):
         # 获取请求的域名
         qname = str(request.q.qname).lower().strip(".")
         reply = request.reply()
         qtype = request.q.qtype
-        #logger.debug(f"Received query: {qname}, type: {qtype}")
         
         base_domain = "flares.cloud"
             
@@ -20,7 +18,7 @@ class DynamicResolver(BaseResolver):
                 # 解析为 IPv4 地址
                 if qtype==1:
                     ip = ".".join(parts)
-                    reply.add_answer(RR(qname,QTYPE.A , rdata=A(ip), ttl=300))
+                    reply.add_answer(RR(qname, QTYPE.A, rdata=A(ip), ttl=300))
                 else:
                     reply.header.rcode = 0
             else:
