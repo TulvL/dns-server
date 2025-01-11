@@ -1,5 +1,10 @@
 from dnslib import DNSRecord, RR, A, CNAME
 from dnslib.server import DNSServer, DNSHandler, BaseResolver
+import socket
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("DNS")
 
 
 class DynamicResolver(BaseResolver):
@@ -8,6 +13,7 @@ class DynamicResolver(BaseResolver):
         qname = str(request.q.qname).lower().strip(".")
         reply = request.reply()
         qtype = request.q.qtype
+        #logger.debug(f"Received query: {qname}, type: {qtype}")
         
         base_domain = "flares.cloud"
             
@@ -44,8 +50,8 @@ class DynamicResolver(BaseResolver):
 if __name__ == "__main__":
     # 监听的地址和端口
     resolver = DynamicResolver()
-    server = DNSServer(resolver, port=53, address="0.0.0.0")
-    print("Starting DNS server on 0.0.0.0:53")
+    server = DNSServer(resolver, port=53, address="::")
+    print("Starting DNS server")
     try:
         server.start()
     except KeyboardInterrupt:
